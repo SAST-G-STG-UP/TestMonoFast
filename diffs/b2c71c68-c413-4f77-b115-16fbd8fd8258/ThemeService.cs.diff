@@ -110,18 +110,24 @@
  
              Directory.Delete(extractPath, true);
              File.Delete(zipFilePath);
-+        var directoryPath = Path.Combine(GlobalConfiguration.ContentRootPath, "Themes", themeName);
-+        var normalizedPath = Path.GetFullPath(directoryPath);
-+        if (!normalizedPath.StartsWith(Path.Combine(GlobalConfiguration.ContentRootPath, "Themes")))
-+        {
-+            throw new UnauthorizedAccessException("Invalid directory path.");
          }
-+        Directory.Delete(normalizedPath, true);
  
          public void Delete(string themeName)
          {
-             Directory.Delete(Path.Combine(GlobalConfiguration.ContentRootPath, "Themes", themeName), true);
-             Directory.Delete(Path.Combine(GlobalConfiguration.WebRootPath, "themes", themeName), true);
+-            Directory.Delete(Path.Combine(GlobalConfiguration.ContentRootPath, "Themes", themeName), true);
+-            Directory.Delete(Path.Combine(GlobalConfiguration.WebRootPath, "themes", themeName), true);
++            var themePath1 = Path.Combine(GlobalConfiguration.ContentRootPath, "Themes", themeName);
++            var themePath2 = Path.Combine(GlobalConfiguration.WebRootPath, "themes", themeName);
++            var normalizedPath1 = Path.GetFullPath(themePath1);
++            var normalizedPath2 = Path.GetFullPath(themePath2);
++
++            if (!normalizedPath1.StartsWith(GlobalConfiguration.ContentRootPath) || !normalizedPath2.StartsWith(GlobalConfiguration.WebRootPath))
++            {
++                throw new UnauthorizedAccessException("Invalid theme path.");
++            }
++
++            Directory.Delete(normalizedPath1, true);
++            Directory.Delete(normalizedPath2, true);
          }
  
          private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
