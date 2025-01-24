@@ -577,15 +577,15 @@
              return true;
          }
  
--        /// <inheritdoc />
+         /// <inheritdoc />
+         public virtual void DeleteFile(string path)
+         {
 +            var normalizedPath = Path.GetFullPath(path);
 +            if (!normalizedPath.StartsWith(Directory.GetCurrentDirectory()))
 +            {
 +                throw new UnauthorizedAccessException("Invalid file path.");
 +            }
-+            File.Delete(normalizedPath);
-         public virtual void DeleteFile(string path)
-         {
++
              SetAttributes(path, false, false);
              File.Delete(path);
          }
