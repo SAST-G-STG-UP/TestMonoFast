@@ -18,7 +18,6 @@
  
  package org.owasp.benchmark.testcode;
  
-+import org.springframework.jdbc.core.PreparedStatementSetter;
  import java.io.IOException;
  
  import javax.servlet.ServletException;
@@ -43,21 +42,16 @@
  
  		String param = request.getParameter("vector");
  		if (param == null) param = "";
--
-+String sql = "SELECT * from USERS where USERNAME='foo' and PASSWORD=?";
+ 
  		String bar = doSomething(param);
  		
--		try {
-+java.util.List list = org.owasp.benchmark.helpers.DatabaseHelper.JDBCtemplate.query(sql, new PreparedStatementSetter() {
-+    @Override
-+    public void setValues(PreparedStatement ps) throws SQLException {
-+        ps.setString(1, bar);
-+    }
-+});
- 	        String sql = "SELECT * from USERS where USERNAME='foo' and PASSWORD='"
- 	            + bar + "'";
- 	
- 			java.util.List list = org.owasp.benchmark.helpers.DatabaseHelper.JDBCtemplate.queryForList(sql);
+ 		try {
+-	        String sql = "SELECT * from USERS where USERNAME='foo' and PASSWORD='"
+-	            + bar + "'";
+-	
+-			java.util.List list = org.owasp.benchmark.helpers.DatabaseHelper.JDBCtemplate.queryForList(sql);
++            String sql = "SELECT * from USERS where USERNAME='foo' and PASSWORD=?";
++            java.util.List list = org.owasp.benchmark.helpers.DatabaseHelper.JDBCtemplate.queryForList(sql, new Object[]{bar});
  			java.io.PrintWriter out = response.getWriter();
  	        out.write("Your results are: <br>");
  	//		System.out.println("Your results are");
