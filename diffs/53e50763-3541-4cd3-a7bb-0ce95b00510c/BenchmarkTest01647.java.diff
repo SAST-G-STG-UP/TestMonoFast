@@ -60,17 +60,17 @@
  
  		String bar = new Test().doSomething(param);
  		
-+            String canonicalPath = new File(fileName).getCanonicalPath();
-+            String baseDir = new File(org.owasp.benchmark.helpers.Utils.testfileDir).getCanonicalPath();
-+            if (!canonicalPath.startsWith(baseDir)) {
-+                throw new IOException("Invalid file path");
-+            }
-+
  		String fileName = null;
  		java.io.FileOutputStream fos = null;
  
  		try {
- 			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
+-			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
++            String basePath = org.owasp.benchmark.helpers.Utils.testfileDir;
++            String normalizedPath = Paths.get(basePath, bar).normalize().toString();
++            if (!normalizedPath.startsWith(basePath)) {
++                throw new IOException("Invalid file path");
++            }
++            fileName = normalizedPath;
  	
  			fos = new java.io.FileOutputStream(fileName, false);
  	        response.getWriter().write("Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName));
